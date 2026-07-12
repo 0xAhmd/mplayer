@@ -26,6 +26,7 @@ class MyDrawer extends StatelessWidget {
 
           ListTile(
             onTap: () {
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SettingsPage()),
