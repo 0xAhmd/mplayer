@@ -12,7 +12,7 @@ class MyDrawer extends StatelessWidget {
         children: [
           SizedBox(height: 128),
 
-          Icon(Icons.music_note, size: 64),
+          Icon(Icons.music_note_rounded, size: 64),
           SizedBox(height: 56),
           ListTile(
             onTap: () {

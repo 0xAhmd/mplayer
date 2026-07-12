@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mplayer/pages/home_page.dart';
 import 'package:mplayer/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +16,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeData = Provider.of<ThemeProvider>(context).themeData;
+
     return MaterialApp(
-     theme: Provider.of<ThemeProvider>(context).themeData,
+      debugShowCheckedModeBanner: false,
+      theme: themeData.copyWith(
+        textTheme: GoogleFonts.interTextTheme(themeData.textTheme),
+      ),
       home: const HomePage(),
-      
     );
   }
 }
