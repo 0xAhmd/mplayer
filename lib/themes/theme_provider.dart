@@ -4,8 +4,8 @@ import 'package:mplayer/themes/dark_mode.dart';
 import 'package:mplayer/themes/light_mode.dart';
 
 class ThemeProvider extends ChangeNotifier{
-  // initially the theme is light mode
-  ThemeData _themeData = lightMode; 
+  // initially the theme is dark mode
+  ThemeData _themeData = darkMode; 
   // get the current theme mode
   ThemeData get themeData => _themeData;
   // check if the current theme mode is dark mode

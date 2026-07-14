@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
 class PlayButtons extends StatelessWidget {
-  const PlayButtons({super.key, required this.onPlayPressed, required this.onNextPressed, required this.onPreviousPressed});
+  const PlayButtons({
+    super.key,
+    required this.isPlaying,
+    required this.onPlayPressed,
+    required this.onNextPressed,
+    required this.onPreviousPressed,
+  });
 
+final bool isPlaying;
 final void Function() onPlayPressed;
 final void Function() onNextPressed;
 final void Function() onPreviousPressed;
@@ -23,8 +30,10 @@ final void Function() onPreviousPressed;
                     child: IconButton(
                       onPressed: onPlayPressed,
                       iconSize: 32,
-                      icon: const Icon(
-                        Icons.play_arrow_rounded,
+                      icon: Icon(
+                        isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
                         color: Colors.white,
                       ),
                     ),

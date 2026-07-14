@@ -3,6 +3,8 @@ import 'package:mplayer/components/cover_box.dart';
 import 'package:mplayer/components/duration_slider.dart';
 import 'package:mplayer/components/play_buttons.dart';
 import 'package:mplayer/components/volume_slider.dart';
+import 'package:mplayer/models/playlist_provider.dart';
+import 'package:provider/provider.dart';
 
 class SongPage extends StatelessWidget {
   final String songName;
@@ -25,7 +27,6 @@ class SongPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 48),
@@ -48,15 +49,32 @@ class SongPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              const DurationSlider(),
-              const SizedBox(height: 20),
-              PlayButtons(
-                onPlayPressed: () {},
-                onNextPressed: () {},
-                onPreviousPressed: () {},
+              Consumer<PlaylistProvider>(
+                builder: (context, playlistProvider, _) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DurationSlider(
+                        position: playlistProvider.currentPosition,
+                        duration: playlistProvider.totalDuration,
+                        onSeek: playlistProvider.seek,
+                      ),
+                      const SizedBox(height: 20),
+                      PlayButtons(
+                        isPlaying: playlistProvider.isPlaying,
+                        onPlayPressed: playlistProvider.playPause,
+                        onNextPressed: playlistProvider.playNextSong,
+                        onPreviousPressed: playlistProvider.playPreviousSong,
+                      ),
+                      const SizedBox(height: 24),
+                      VolumeSlider(
+                        volume: playlistProvider.volume,
+                        onVolumeChanged: playlistProvider.setVolume,
+                      ),
+                    ],
+                  );
+                },
               ),
-              const SizedBox(height: 24),
-              VolumeSlider(onVolumeChanged: (value) {}),
             ],
           ),
         ),
