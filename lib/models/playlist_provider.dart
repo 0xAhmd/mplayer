@@ -6,7 +6,7 @@ class PlaylistProvider extends ChangeNotifier {
     Song(
       name: "Data Stream",
       artist: "Doris Roberts",
-      image: "assets/images/playlist1.jpg",
+      image: "assets/images/dataStream.jpg",
       audioPath: "assets/audio/Data Stream.mp3",
     ),
     Song(
