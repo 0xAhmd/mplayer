@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mplayer/components/drawer.dart';
 import 'package:mplayer/models/playlist_provider.dart';
+import 'package:mplayer/models/song.dart';
 import 'package:mplayer/pages/song_page.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +13,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final dynamic playListProvider;
+  late final PlaylistProvider playListProvider;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
-  initState() {
+  void initState() {
     super.initState();
     playListProvider = Provider.of<PlaylistProvider>(context, listen: false);
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.trim();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void goToSongPage(int songIndex) {
@@ -24,14 +39,34 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            SongPage(
-              songArtist: playListProvider.playlists[songIndex].artist,
-              songName: playListProvider.playlists[songIndex].name,
-              songCover: playListProvider.playlists[songIndex].image,
-            ),
+        builder: (context) => SongPage(
+          songArtist: playListProvider.playlists[songIndex].artist,
+          songName: playListProvider.playlists[songIndex].name,
+          songCover: playListProvider.playlists[songIndex].image,
+        ),
       ),
     );
+  }
+
+  List<Song> _filteredPlaylists(List<Song> playlists) {
+    if (_searchQuery.isEmpty) {
+      return playlists;
+    }
+
+    final query = _searchQuery.toLowerCase();
+    return playlists.where((song) {
+      return song.name.toLowerCase().contains(query) ||
+          song.artist.toLowerCase().contains(query);
+    }).toList();
+  }
+
+  int _originalIndexForSong(Song song) {
+    return playListProvider.playlists.indexWhere((item) {
+      return item.name == song.name &&
+          item.artist == song.artist &&
+          item.image == song.image &&
+          item.audioPath == song.audioPath;
+    });
   }
 
   @override
@@ -51,7 +86,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -62,13 +97,33 @@ class _HomePageState extends State<HomePage> {
                     Icons.search,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  const SizedBox(width: 14),
-                  Text(
-                    'Songs',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.inversePrimary,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search songs or artists',
+                        hintStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        ),
+                        border: InputBorder.none,
+                        isDense: true,
+                        suffixIcon: _searchQuery.isEmpty
+                            ? null
+                            : IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                                onPressed: () {
+                                  _searchController.clear();
+                                },
+                              ),
+                      ),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ],
@@ -77,13 +132,31 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 10),
             Consumer<PlaylistProvider>(
               builder: (context, playlistProvider, _) {
-                final playlists = playlistProvider.playlists;
+                final allPlaylists = playlistProvider.playlists;
+                final playlists = _filteredPlaylists(allPlaylists);
+
+                if (playlists.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
+                    child: Center(
+                      child: Text(
+                        'No songs found.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: playlists.length,
                   itemBuilder: (context, index) {
                     final song = playlists[index];
+                    final originalIndex = _originalIndexForSong(song);
                     return ListTile(
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
@@ -109,7 +182,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onTap: () {
-                        goToSongPage(index);
+                        if (originalIndex != -1) {
+                          goToSongPage(originalIndex);
+                        }
                       },
                     );
                   },
