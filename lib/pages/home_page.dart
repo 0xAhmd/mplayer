@@ -1,10 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:mplayer/components/drawer.dart';
 import 'package:mplayer/models/playlist_provider.dart';
+import 'package:mplayer/models/song.dart';
+import 'package:mplayer/pages/song_page.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final dynamic playListProvider;
+  @override
+  initState() {
+    super.initState();
+    playListProvider = Provider.of<PlaylistProvider>(context, listen: false);
+  }
+
+  void goToSongPage(int songIndex) {
+    playListProvider.currentIndex = songIndex;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            SongPage(
+              songArtist: playListProvider.playlists[songIndex].artist,
+              songName: playListProvider.playlists[songIndex].name,
+              songCover: playListProvider.playlists[songIndex].image,
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +95,22 @@ class HomePage extends StatelessWidget {
                           fit: BoxFit.fill,
                         ),
                       ),
-                      title: Text(song.name , style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),
-                      subtitle: Text(song.artist, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),),
+                      title: Text(
+                        song.name,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        song.artist,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                       onTap: () {
-                        // Handle song selection
+                        goToSongPage(index);
                       },
                     );
                   },
