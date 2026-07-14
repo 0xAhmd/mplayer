@@ -10,19 +10,19 @@ class MyDrawer extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       child: Column(
         children: [
-          SizedBox(height: 128),
+          const SizedBox(height: 128),
 
-          Icon(Icons.music_note_rounded, size: 64),
-          SizedBox(height: 56),
+          const Icon(Icons.music_note_rounded, size: 64),
+          const SizedBox(height: 56),
           ListTile(
             onTap: () {
               Navigator.pop(context);
             },
 
-            leading: Icon(Icons.home, size: 32),
-            title: Text('H O M E', style: TextStyle(fontSize: 16)),
+            leading: const Icon(Icons.home, size: 32),
+            title: const Text('H O M E', style: TextStyle(fontSize: 16)),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
           ListTile(
             onTap: () {
@@ -32,8 +32,8 @@ class MyDrawer extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
-            leading: Icon(Icons.settings, size: 32),
-            title: Text('S E T T I N G S', style: TextStyle(fontSize: 16)),
+            leading: const Icon(Icons.settings, size: 32),
+            title: const Text('S E T T I N G S', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),

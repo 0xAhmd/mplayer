@@ -11,7 +11,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("S E T T I N G S", style: TextStyle(fontSize: 20)),
+        title: const Text("S E T T I N G S", style: TextStyle(fontSize: 20)),
       ),
       body: Center(
         child: Column(
@@ -21,10 +21,10 @@ class SettingsPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(13),
                 color: Theme.of(context).colorScheme.primary,
               ),
-              margin: EdgeInsets.all(16),
-              padding: EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: ListTile(
-                title: Text("Dark Mode" , style: TextStyle(fontSize: 18 )),
+                title: const Text("Dark Mode" , style: TextStyle(fontSize: 18 )),
                 trailing: CupertinoSwitch(
                   value: Provider.of<ThemeProvider>(context).isDarkMode,
                   onChanged: (value) {

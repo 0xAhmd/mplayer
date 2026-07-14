@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mplayer/components/drawer.dart';
 import 'package:mplayer/models/playlist_provider.dart';
-import 'package:mplayer/models/song.dart';
 import 'package:mplayer/pages/song_page.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       appBar: AppBar(
         centerTitle: false,
         title: const Text(
@@ -97,14 +96,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                       title: Text(
                         song.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       subtitle: Text(
                         song.artist,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                         ),
