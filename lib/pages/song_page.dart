@@ -20,65 +20,69 @@ class SongPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(centerTitle: true, title: Text(songName)),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 48),
-              CoverBox(songCover: songCover),
-              const SizedBox(height: 24),
-              Text(
-                songName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Consumer<PlaylistProvider>(
+      builder: (context, playlistProvider, _) {
+        final index = playlistProvider.currentIndex;
+        final currentSong = index != null
+            ? playlistProvider.playlists[index]
+            : null;
+
+        final name = currentSong?.name ?? songName;
+        final artist = currentSong?.artist ?? songArtist;
+        final cover = currentSong?.image ?? songCover;
+
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          appBar: AppBar(centerTitle: true, title: Text(name)),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 48),
+                  CoverBox(songCover: cover),
+                  const SizedBox(height: 24),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    artist,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  DurationSlider(
+                    position: playlistProvider.currentPosition,
+                    duration: playlistProvider.totalDuration,
+                    onSeek: playlistProvider.seek,
+                  ),
+                  const SizedBox(height: 20),
+                  PlayButtons(
+                    isPlaying: playlistProvider.isPlaying,
+                    onPlayPressed: playlistProvider.playPause,
+                    onNextPressed: playlistProvider.playNextSong,
+                    onPreviousPressed: playlistProvider.playPreviousSong,
+                  ),
+                  const SizedBox(height: 24),
+                  VolumeSlider(
+                    volume: playlistProvider.volume,
+                    onVolumeChanged: playlistProvider.setVolume,
+                  ),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                songArtist,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Consumer<PlaylistProvider>(
-                builder: (context, playlistProvider, _) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DurationSlider(
-                        position: playlistProvider.currentPosition,
-                        duration: playlistProvider.totalDuration,
-                        onSeek: playlistProvider.seek,
-                      ),
-                      const SizedBox(height: 20),
-                      PlayButtons(
-                        isPlaying: playlistProvider.isPlaying,
-                        onPlayPressed: playlistProvider.playPause,
-                        onNextPressed: playlistProvider.playNextSong,
-                        onPreviousPressed: playlistProvider.playPreviousSong,
-                      ),
-                      const SizedBox(height: 24),
-                      VolumeSlider(
-                        volume: playlistProvider.volume,
-                        onVolumeChanged: playlistProvider.setVolume,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
